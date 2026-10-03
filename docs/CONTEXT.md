@@ -41,6 +41,5 @@ None.
 
 ## Next Session
 
-Commit the restructure (uncommitted in the working tree), install
-the skill, drive one real Gutenberg edition through it, then start
-the Obsidian pilot.
+Install the skill, drive one real Gutenberg edition through it, then
+start the Obsidian pilot.
