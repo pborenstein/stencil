@@ -1,5 +1,28 @@
 # Phase 1: Obsidian Pilot
 
+## Entry 4: Gatsby through the installed skill — the live run works; three contract findings (2026-10-03)
+
+**What**: Installed the skill (`stencil-work/` → `~/.zcode/skills/stencil/`) and drove one live edition end-to-end: The Great Gatsby (#64317) into 002375.xyz (folio). Fetch, ingest, warnings worked in the JSON, emit with `--replace-demo --colophon --metadata`, sweep, build gate clean (14 files); all 9 chapters verified byte-identical to the ingested text. No stencil-repo code changed — the run's value is what it surfaced.
+
+**Why**: Phase 1's stated preface: the live run is the skill's first real test.
+
+**How**:
+
+- Gatsby heads chapters with indented bare roman numerals on CRLF lines; first ingest reported "no structural headings". `--extra-heading '^\s*[IVXLCDM]{1,7}\s*$'` (whitespace-tolerant anchors) recovered all 9 — after grep-verifying exactly 18 matching lines (9 TOC + 9 headings, nothing else)
+- Second ingest warned "duplicate heading labels": the numeral TOC matched the heading style, was not dropped, and became 9 empty unit shells with the dedication + epigraph (37 words) trapped in the last. Model-layer fix in the JSON: drop shells, rescue front matter (routed to the about page), renumber 1–9
+- Untitled chapters got incipit titles — verbatim opening words, clause-boundary cuts, sentence case + ellipsis, word-by-word verified against the source
+- The session predates skill auto-discovery, so the run followed SKILL.md read as a document; auto-trigger is still untested
+
+**Findings** (queued as Phase 1 tasks):
+
+- emit-chapters ignores a JSON-level unit `title` and derives it from the heading; SKILL.md tells the agent to rename titles in the JSON — contract mismatch
+- Emitting into an empty chapters/ dir loses the template's frontmatter keys (probe fell back to `title,order`; folio's `chapterNumber,dek` gone until re-added by hand)
+- folio's metadata `subtitle` is outside `--metadata`'s documented keys — swept by hand, same class as pamphlet's hardcoded index title (Phase 0 note)
+
+**Decisions**: none new; the run exercised DEC-009's form as built.
+
+**Files**: skill at `~/.zcode/skills/stencil/`; site work uncommitted in `~/projects/mimeo-sites/002375.xyz` (9 incipit-titled chapters `01-i.md`…`09-ix.md`, colophon, metadata, about); run artifacts in `/tmp/stencil-run/64317/`
+
 ## Entry 3: mimeo-congruent package form; the skill drives the CLI (2026-10-03)
 
 **What**: Restructured the repo from standalone helper scripts into a uv/hatchling Click CLI package following mimeo's code form, via the plinth python-project-init skill. Re-validated the full Gutenberg path through the new command surface.

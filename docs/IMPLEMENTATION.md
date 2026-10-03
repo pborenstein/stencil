@@ -27,9 +27,19 @@ a session with it — the live run is the skill's first real test.
       re-validated end-to-end (Frankenstein on chapbook, 33 files; P&P
       `--extra-heading`, 61 units); CLAUDE.md written;
       `stencil-work/` reduced to SKILL.md driving the CLI
-- [ ] Install the skill (`stencil-work/` → `~/.zcode/skills/stencil/`;
+- [x] Install the skill (`stencil-work/` → `~/.zcode/skills/stencil/`;
       the CLI is importable via `uv run --project ~/projects/stencil`)
-- [ ] One live Gutenberg edition end-to-end through the installed skill
+- [x] One live Gutenberg edition end-to-end through the installed skill
+      (2026-10-03: Gatsby #64317 → 002375.xyz on folio, build gate clean,
+      chapter text byte-identical; findings below and in Entry 4)
+- [ ] emit-chapters honors a JSON-level unit `title` over the
+      heading-derived default — SKILL.md's documented rename path; the
+      pilot had to set incipit titles on emitted files instead
+- [ ] Ingest drops or flags TOC-shell units: Gatsby's bare-numeral TOC
+      matched the heading style, was not dropped, and became 9 empty
+      units (front matter trapped in the last)
+- [ ] Probe fallback when chapters/ is empty: the Gatsby re-emit probed
+      `title,order` only, losing folio's `chapterNumber,dek` keys
 - [ ] Ingest helper for an Obsidian page (wikilinks, callouts, embeds,
       images)
 - [ ] Post emitter probing `content/posts/` + `content/pages/` the way
