@@ -2,7 +2,7 @@
 phase: 1
 phase_name: Obsidian pilot
 updated: 2026-10-03
-last_commit: TBD
+last_commit: a091146
 last_entry: 2
 ---
 
