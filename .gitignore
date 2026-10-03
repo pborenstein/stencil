@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# macOS
+.DS_Store
+
+# stencil scratch (fetch and emit working files)
+book.txt
+ingested.json
+
+# ZCode harness local config
+.zcode/

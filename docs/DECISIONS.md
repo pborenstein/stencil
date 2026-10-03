@@ -90,6 +90,34 @@ DEC-001 through DEC-006 were documented retroactively on 2026-10-03 from the REA
 
 ---
 
+### DEC-007: The split is teachable by explicit regex, never by heuristics (2026-10-03)
+
+**Status**: Active
+
+**Context**: Pride and Prejudice #1342 sets its first chapter heading as an illustration caption (`Chapter I.]` closing a multi-line `[Illustration:` block). The split family (Chapter/Letter/Part/Book + number) cannot recognize it, and Chapter I landed in the reported preamble.
+
+**Decision**: `ingest_gutenberg.py` accepts `--extra-heading REGEX` (repeatable). When a warning shows missed headings, the agent finds the edition's actual heading line and teaches the splitter explicitly, instead of the script guessing at more heading styles.
+
+**Alternatives considered**: Broadening the built-in heading family (rejected: guessing inside the helper violates DEC-002); hand-editing the JSON (rejected: loses the provenance of a repeatable command).
+
+**Consequences**: Edition quirks stay visible as warnings until an agent teaches them; the heading family stays small and testable. Each quirky edition adds a documented regex, not code.
+
+---
+
+### DEC-008: `stencil-work/` is the installable skill directory (2026-10-03)
+
+**Status**: Active
+
+**Context**: The executor is an agent skill plus helpers (DEC-001). The skill text and the helpers must stay in sync, and skills install by directory into `~/.zcode/skills/`.
+
+**Decision**: `stencil-work/` holds `SKILL.md` next to the two helper scripts; installing the skill is copying or symlinking that one directory. The README documents this.
+
+**Alternatives considered**: SKILL.md at the repo root with a build/install step (rejected: two sources of truth for one skill).
+
+**Consequences**: The repo layout mirrors the installed layout. Tests import the helpers from `stencil-work/`, so drift between repo and installed skill shows up immediately.
+
+---
+
 ## Superseded/Deprecated
 
 None.

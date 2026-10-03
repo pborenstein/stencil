@@ -7,10 +7,12 @@ page, another website — and the appropriately shaped content files
 come out the other end.
 
 stencil is **not a mimeo command**. It is an agent skill plus two
-deterministic helpers (this directory). The agent reads a prose brief
-("make a reading edition of gutenberg 84 in the frankenstein-test
-site"), translates it into helper invocations with explicit
-arguments, and fills the gaps that need judgment.
+deterministic helpers in [`stencil-work/`](stencil-work/) — that
+directory (SKILL.md and the scripts together) is the installable skill;
+copy or symlink it into `~/.zcode/skills/stencil/`. The agent reads a
+prose brief ("make a reading edition of gutenberg 84 in the
+frankenstein-test site"), translates it into helper invocations with
+explicit arguments, and fills the gaps that need judgment.
 
 ## Where judgment lives
 
@@ -48,6 +50,29 @@ roman numeral), reflows hard-wrapped paragraphs. Output:
   preface); reported for the agent to route
 - `units` — `[{heading, order, text}]`, the mechanical split
 - `license` — the full PG license tail, reflowed
+- `warnings` — signals the agent must read before emitting: a
+  preamble big enough to hold missed content (a heading style the
+  split does not recognize, or a genuine introduction before the
+  first heading), duplicate heading labels (one file holding an
+  introduction and a translation), or no headings at all
+
+When a warning means the split missed headings, teach it the
+edition's style explicitly instead of hand-editing the JSON:
+
+    python3 ingest_gutenberg.py book.txt \
+        --extra-heading '^Chapter [IVXLCDM]+\.\]$' > ingested.json
+
+(`--extra-heading` is repeatable. Pride and Prejudice #1342 needs the
+one above — its first heading is an illustration caption,
+`Chapter I.]`.)
+
+Two validated case studies: Republic #1497's Jowett Introduction
+(~98k words, no BOOK headings) lands whole in the preamble with a
+warning, and the translation's ten BOOK units split clean; and its
+earlier 20-unit output — before the case-insensitive CONTENTS fix —
+was silently corrupt, with the Introduction hidden inside a TOC-entry
+unit's body. Warnings exist because that failure mode is invisible
+without them.
 
 ### `emit_chapters.py`
 
@@ -107,6 +132,17 @@ against a fresh copy of eleventy-chapbook with Frankenstein, eBook
 Result: 33 files built clean — 28 chapter pages, colophon in the nav
 with the full PG license, `metadata.js` carrying the book title and
 author, two `<details>` annotations rendered in place.
+
+The same emit was validated against fresh copies of eleventy-folio
+and eleventy-pamphlet (33 files each, probe imitating each template's
+own naming). Folio's `chapterNumber`/`dek` frontmatter keys are
+deliberately not auto-filled — they are writing. Pointed at
+pandoc-resume, the probe refuses: "not a chaptered site", exit 1.
+
+Three books cover the split: Frankenstein #84 (letters + chapters, no
+warnings), Pride and Prejudice #1342 (illustration-caption headings,
+recovered with `--extra-heading`), Republic #1497 (BOOK + roman
+numerals; massive headingless Introduction reported in the preamble).
 
 ## Not built yet
 

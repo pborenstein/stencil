@@ -57,6 +57,12 @@ def js_escape(s: str) -> str:
 
 def probe(site: Path) -> dict:
     chdir = site / "content" / "chapters"
+    if not chdir.is_dir():
+        sys.exit(
+            f"error: {chdir} does not exist -- not a chaptered site "
+            "(eleventy-chapbook / -folio / -pamphlet, or a site grown from one). "
+            "The pandoc templates take a single root file and are not chapter targets."
+        )
     demos = sorted(chdir.glob("*.md"))
     if not demos:
         naming, keys = "{order:02d}-{slug}.md", ["title", "order"]

@@ -6,16 +6,32 @@ Phase progress for stencil. Session pickup reads [CONTEXT.md](CONTEXT.md) first;
 
 | # | Name | Status | Commits |
 |---|------|--------|---------|
-| 0 | Foundation | Current | f77f3e8-HEAD |
-| 1 | Obsidian pilot | Planned | - |
+| 0 | Foundation | Complete | f77f3e8-HEAD |
+| 1 | Obsidian pilot | Current | - |
 | 2 | Site-as-model pilot | Planned | - |
 | 3 | Landing-page fill | Planned | - |
 
 Status values are plain text: `Complete`, `Current`, `Planned`. Find the current phase with `grep -n "| Current |" docs/IMPLEMENTATION.md`.
 
-## Current Phase: 0 - Foundation
+## Current Phase: 1 - Obsidian pilot
 
-**Goal**: A standalone stencil repo holding the Gutenberg reading-edition path (ingest + emit + build gate) and the agent skill that drives it.
+Phase 0 closed per its stated exit condition (helpers and skill tracked
+here, Gutenberg path test-covered). Before starting Phase 1 proper,
+install the skill and run one real Gutenberg edition through it:
+copy or symlink `stencil-work/` to `~/.zcode/skills/stencil/` and drive
+a session with it — the live run is the skill's first real test.
+
+- [ ] Install the skill (`stencil-work/` → `~/.zcode/skills/stencil/`)
+- [ ] One live Gutenberg edition end-to-end through the installed skill
+- [ ] Ingest helper for an Obsidian page (wikilinks, callouts, embeds,
+      images)
+- [ ] Post emitter probing `content/posts/` + `content/pages/` the way
+      `emit_chapters.py` probes chapters
+- [ ] Agent-written excerpt / date / tags for a post
+
+## Completed Phases
+
+### Phase 0: Foundation
 
 ### Done
 
@@ -28,44 +44,41 @@ Status values are plain text: `Complete`, `Current`, `Planned`. Find the current
 
 ### Repo setup
 
-- [ ] Decide where the helpers live: they currently sit untracked in `/Users/philip/projects/mimeo/stencil/` alongside an identical README; this repo tracks only the README
-- [ ] Bring `ingest_gutenberg.py` and `emit_chapters.py` into this repo (or document why not) and reconcile the README's "this directory" wording
-- [ ] Remove or redirect the copy in the mimeo checkout once the helpers have one home
-- [ ] Add a git remote (none configured)
-- [ ] Add `.gitignore` (`.DS_Store`, `__pycache__/`, scratch `book.txt` / `ingested.json`)
+- [x] Helpers live in `stencil-work/` (brought in from the mimeo checkout 2026-10-03)
+- [x] `SKILL.md` lives beside the helpers, so `stencil-work/` is the installable skill dir; README's "this directory" wording reconciled
+- [x] Copy removed from the mimeo checkout (untracked there; deleted 2026-10-03)
+- [x] Add a git remote (origin: `github.com/pborenstein/stencil`)
+- [x] Add `.gitignore` (`.DS_Store`, `__pycache__/`, scratch `book.txt` / `ingested.json`)
 
 ### Agent skill
 
-- [ ] Write the skill itself (SKILL.md): how a prose brief maps to helper invocations
-- [ ] Document the judgment calls the agent owns: Letter units, display titles, preamble routing, annotation text
-- [ ] Document the build-gate loop: emit, build, read error, fix emit, re-run
+- [x] Write the skill itself (`stencil-work/SKILL.md`): how a prose brief maps to helper invocations
+- [x] Document the judgment calls the agent owns: Letter units, display titles, preamble routing, annotation text, homepage demo title sweep
+- [x] Document the build-gate loop: emit, build, read error, fix emit, re-runs
 
 ### Helper hardening
 
-- [ ] Tests for `ingest_gutenberg.py`: PG marker slicing, CONTENTS drop, heading split, paragraph reflow
-- [ ] Tests for `emit_chapters.py`: site probing, each stage flag, `url` key left untouched
-- [ ] Validate against a second book with different structure (Part/Book headings, no letters)
-- [ ] Validate against eleventy-folio and eleventy-pamphlet, and the pandoc templates (`./build.sh`)
-- [ ] Confirm that everything ingest cannot classify shows up in its report
+- [x] Tests for `ingest_gutenberg.py`: PG marker slicing, CONTENTS drop, heading split, paragraph reflow (plus warnings, `--extra-heading`, case-insensitive Contents)
+- [x] Tests for `emit_chapters.py`: site probing, each stage flag, `url` key left untouched
+- [x] Validate against a second book with different structure — two: Pride and Prejudice #1342 (no letters; illustration-caption headings → `--extra-heading` recovers all 61 chapters) and Republic #1497 (BOOK + roman; Jowett Introduction reported whole in the preamble)
+- [x] Validate against eleventy-folio and eleventy-pamphlet (33 files each, probe imitating each naming); pandoc-resume refusal confirmed ("not a chaptered site", exit 1)
+- [x] Confirm that everything ingest cannot classify shows up in its report — the `warnings` field: oversized preamble, duplicate heading labels, no headings
 
 ### Notes
 
-- The verified example covers eleventy-chapbook only; the other chaptered templates are claimed by the README but unvalidated.
-- Phase 0 closes when the helpers and skill are tracked here and the Gutenberg path has test coverage.
-
-## Completed Phases
-
-None yet.
+- 31 tests, all passing (`python3 -m unittest discover -s tests`).
+- The case-insensitive CONTENTS fix revealed that Republic's earlier
+  20-unit output was silently corrupt (the Introduction hid inside a
+  TOC-entry unit's body); the honest 10-unit + warning output is the
+  correct one. Warnings exist because that failure mode is invisible
+  without them.
+- pamphlet's homepage title is page frontmatter (`content/index.md`
+  `title: Pamphlet`), not `metadata.js` — the skill's sweep step
+  covers it; the emitter rightly does not.
+- Phase 0 closed with the work committed and the remote wired; the
+  live-run items moved to the top of Phase 1.
 
 ## Future Phases
-
-### Phase 1: Obsidian pilot
-
-- Ingest an Obsidian page as a blog post
-- Transform wikilinks, callouts, embeds, and images
-- Agent writes excerpt, date, and tags
-- Targets eleventy-prose-blog / eleventy-tech-blog (`content/posts/`, `content/pages/`)
-- New ingest helper and a post emitter that probes the site as `emit_chapters.py` does
 
 ### Phase 2: Site-as-model pilot
 
