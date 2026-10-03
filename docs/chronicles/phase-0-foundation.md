@@ -24,3 +24,25 @@
 - DEC-006: agent-written annotations as collapsed details blocks
 
 **Files**: `README.md` (f77f3e8), `docs/`
+
+## Entry 2: Phase 0 closed -- hardening, tests, skill, and the three-book validation (2026-10-03)
+
+**What**: Hardened the ingest from second-book validation, gave both helpers a 31-test suite, wrote the agent skill, validated all three chaptered templates, brought everything into this repo, and closed Phase 0. The mimeo checkout's `stencil/` copy is deleted; mimeo is clean.
+
+**Why**: The helpers had been validated against one book on one template. Real Gutenberg editions vary structurally, and the probe/imitate design claimed more templates than had been tested.
+
+**How**:
+
+- Second-book validation found two structural cases: Pride and Prejudice #1342 sets its first heading as an illustration caption (`Chapter I.]`), and Republic #1497's case-insensitive CONTENTS fix revealed the earlier 20-unit output was silently corrupt (Jowett's ~98k-word Introduction hidden inside a TOC-entry unit's body)
+- Responses per DEC-002: a `warnings` field in the ingest JSON (oversized preamble, duplicate heading labels, no headings) and `--extra-heading REGEX` to teach the split an edition's heading style explicitly; with it, P&P recovers all 61 chapters
+- Same Frankenstein emit validated on fresh folio and pamphlet copies (33 files each, probe imitating each naming); pandoc-resume refused cleanly ("not a chaptered site", exit 1)
+- `stencil-work/SKILL.md` written: brief-to-invocation workflow, warnings playbook with both case studies, agent-owned judgment calls, build-gate loop; `stencil-work/` is the installable skill dir
+- `.gitignore` added; remote wired (github.com/pborenstein/stencil)
+
+**Decisions**:
+
+- DEC-007: the split is teachable by explicit regex, never by heuristics
+- DEC-008: `stencil-work/` is the installable skill directory
+
+**Files**: 89aa8f1 (`stencil-work/`, `tests/`, `.gitignore`, README, docs)
+
