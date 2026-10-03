@@ -6,10 +6,15 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 
 # stencil
 
-stencil populates mimeo sites. The helpers in this directory do the
-deterministic work; you do the judgment work. Never hand-edit what a
-helper can compute, and never let a helper guess what only you should
-decide.
+stencil populates mimeo sites. The CLI does the deterministic work;
+you do the judgment work. Never hand-edit what a command can compute,
+and never let a command guess what only you should decide.
+
+The CLI lives in the stencil repo (`~/projects/stencil`, congruent
+with mimeo's code form). Invoke it as `uv run --project
+~/projects/stencil stencil <command>` — or plain `stencil <command>`
+when the package is on PATH. The repo's CLAUDE.md documents the
+development form; this skill documents the driving form.
 
 ## Workflow
 
@@ -24,7 +29,7 @@ decide.
 
 3. **Ingest:**
 
-       python3 <skill-dir>/ingest_gutenberg.py book.txt > ingested.json
+       stencil ingest-gutenberg book.txt > ingested.json
 
 4. **Read the report before emitting.** This step is the product.
    - `warnings` is your to-do list. Every warning means a decision:
@@ -54,7 +59,7 @@ decide.
 
 5. **Emit** (site checkout path first):
 
-       python3 <skill-dir>/emit_chapters.py SITE/ ingested.json \
+       stencil emit-chapters SITE/ ingested.json \
            [--replace-demo] [--colophon] [--metadata] \
            [--annotations annotations.json]
 
@@ -99,15 +104,17 @@ decide.
 - Annotation content and placement.
 - The homepage demo title sweep (step 6).
 
-## What the helpers own
+## What the CLI owns
 
 - Marker slicing, TOC dropping, heading split, paragraph reflow,
-  metadata parsing (`ingest_gutenberg.py`).
+  metadata parsing (`ingest-gutenberg`).
 - Site probing (naming, frontmatter keys, nav order), file emission,
   colophon, metadata.js edits, annotation placement
-  (`emit_chapters.py`).
+  (`emit-chapters`).
 
-If a helper lacks something you need, prefer its explicit knobs
+If the CLI lacks something you need, prefer its explicit knobs
 (`--extra-heading`) over post-hoc sed on its output; only edit the
 JSON (step 4), never the emitted files, except for writing (titles,
-deks) the brief asks for.
+deks) the brief asks for. New capabilities that are mechanical belong
+in the CLI (one module per command, mimeo's form); new decisions
+belong here.

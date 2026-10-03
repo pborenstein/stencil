@@ -6,13 +6,13 @@ point it at source material — a Project Gutenberg book, an Obsidian
 page, another website — and the appropriately shaped content files
 come out the other end.
 
-stencil is **not a mimeo command**. It is an agent skill plus two
-deterministic helpers in [`stencil-work/`](stencil-work/) — that
-directory (SKILL.md and the scripts together) is the installable skill;
-copy or symlink it into `~/.zcode/skills/stencil/`. The agent reads a
-prose brief ("make a reading edition of gutenberg 84 in the
-frankenstein-test site"), translates it into helper invocations with
-explicit arguments, and fills the gaps that need judgment.
+stencil is **not a mimeo command**. It is an agent skill
+([`stencil-work/SKILL.md`](stencil-work/SKILL.md)) driving a Click CLI
+installed from this repo — same code form as mimeo (uv, hatchling,
+one cli module per command). The agent reads a prose brief ("make a
+reading edition of gutenberg 84 in the frankenstein-test site"),
+translates it into CLI invocations with explicit arguments, and fills
+the gaps that need judgment.
 
 ## Where judgment lives
 
@@ -30,16 +30,22 @@ not discarded silently, and the agent decides:
   the emitter only places the blocks)
 - what a post's excerpt, date, and tags are (Obsidian pilot)
 
-## The helpers
+## The CLI
 
-Two stdlib-only Python 3 scripts. No dependency on the mimeo package.
+    uv sync
+    uv run stencil --help
 
-### `ingest_gutenberg.py`
+Two commands so far; each is one module under `stencil/cli/`, mirroring
+mimeo's cli package. The library modules (`stencil/gutenberg.py`,
+`stencil/emit.py`) raise typed exceptions; the CLI converts them to
+Click errors and nonzero exits.
+
+### `stencil ingest-gutenberg`
 
 Turns a Project Gutenberg plain-text ebook into stencil JSON:
 
     curl -o book.txt https://www.gutenberg.org/cache/epub/84/pg84.txt
-    python3 ingest_gutenberg.py book.txt > ingested.json
+    uv run stencil ingest-gutenberg book.txt > ingested.json
 
 Slices on the canonical PG markers, drops the CONTENTS block, splits
 on structural headings (Chapter / Letter / Part / Book + number or
@@ -59,7 +65,7 @@ roman numeral), reflows hard-wrapped paragraphs. Output:
 When a warning means the split missed headings, teach it the
 edition's style explicitly instead of hand-editing the JSON:
 
-    python3 ingest_gutenberg.py book.txt \
+    uv run stencil ingest-gutenberg book.txt \
         --extra-heading '^Chapter [IVXLCDM]+\.\]$' > ingested.json
 
 (`--extra-heading` is repeatable. Pride and Prejudice #1342 needs the
@@ -79,10 +85,10 @@ without them.
 Installs stencil JSON into a chaptered site checkout
 (eleventy-chapbook / -folio / -pamphlet or a site grown from one):
 
-    python3 emit_chapters.py SITE/ ingested.json \
+    uv run stencil emit-chapters SITE/ ingested.json \
         [--replace-demo] [--colophon] [--metadata] [--annotations ann.json]
 
-Nothing about a specific template is hardcoded. The script probes the
+Nothing about a specific template is hardcoded. The command probes the
 site first and imitates what it finds:
 
 - chapter naming convention, from existing chapter filenames
@@ -124,8 +130,8 @@ The full reading-edition path was validated end-to-end (2026-10-03)
 against a fresh copy of eleventy-chapbook with Frankenstein, eBook
 #84 (448 KB of plain text → 28 units: 4 letters + 24 chapters):
 
-    python3 ingest_gutenberg.py book.txt > ingested.json
-    python3 emit_chapters.py SITE/ ingested.json \
+    uv run stencil ingest-gutenberg book.txt > ingested.json
+    uv run stencil emit-chapters SITE/ ingested.json \
         --replace-demo --colophon --metadata --annotations ann.json
     cd SITE && npm install && npm run build
 

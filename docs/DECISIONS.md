@@ -36,7 +36,7 @@ DEC-001 through DEC-006 were documented retroactively on 2026-10-03 from the REA
 
 ### DEC-003: Helpers are stdlib-only Python 3 with no mimeo dependency (2026-10-03)
 
-**Status**: Active
+**Status**: Superseded by DEC-009 (2026-10-03)
 
 **Context**: The helpers run against arbitrary site checkouts and should work without an install step.
 
@@ -106,7 +106,7 @@ DEC-001 through DEC-006 were documented retroactively on 2026-10-03 from the REA
 
 ### DEC-008: `stencil-work/` is the installable skill directory (2026-10-03)
 
-**Status**: Active
+**Status**: Amended by DEC-009: `stencil-work/` holds `SKILL.md` only; the helpers moved into the package (2026-10-03)
 
 **Context**: The executor is an agent skill plus helpers (DEC-001). The skill text and the helpers must stay in sync, and skills install by directory into `~/.zcode/skills/`.
 
@@ -118,6 +118,20 @@ DEC-001 through DEC-006 were documented retroactively on 2026-10-03 from the REA
 
 ---
 
+### DEC-009: stencil is a mimeo-congruent Click CLI package; the skill drives the CLI (2026-10-03)
+
+**Status**: Active
+
+**Context**: Design principle stated by the user: stencil is skill-based where decisions are made by the LLM, but the Python helpers must be runnable from the command line, congruent and not ad-hoc. The plinth `python-project-init` skill was run on the repo to adopt mimeo's code form.
+
+**Decision**: The repo is a uv/hatchling package (`pyproject.toml`, `stencil/` package, one Click command module per command under `stencil/cli/`, pytest/mypy/ruff dev tooling, `uv run stencil ...`). The two helpers became `stencil ingest-gutenberg` and `stencil emit-chapters`; library modules (`stencil/gutenberg.py`, `stencil/emit.py`) raise typed exceptions (`GutenbergError`, `EmitError`) which the CLI converts to Click errors and nonzero exits. `stencil-work/` holds `SKILL.md` only, invoking the CLI; the install story is symlink the skill dir plus have the package importable (`uv run --project ~/projects/stencil` or installed). Supersedes DEC-003 (no longer stdlib-only single files; click dependency and uv are acceptable); amends DEC-008 (skill dir no longer bundles the scripts).
+
+**Alternatives considered**: Keep the standalone scripts (rejected: ad-hoc, diverges from mimeo's form as the project grows commands); put helpers inside the skill dir permanently (rejected: no importable package, no typed surface, duplicated test paths).
+
+**Consequences**: Two layers with clear roles: the CLI is mechanical and testable (39 tests, mypy strict-ish, ruff), the SKILL.md is the judgment layer. New mechanical capabilities land as new cli modules in mimeo's form; new decisions land in the skill text. Requires `uv sync` before first use. Python floor is 3.11 (union types, modern typing), matching mimeo.
+
+---
+
 ## Superseded/Deprecated
 
-None.
+- DEC-003 (stdlib-only single-file helpers) — superseded by DEC-009.

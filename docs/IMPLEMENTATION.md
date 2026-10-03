@@ -21,7 +21,14 @@ install the skill and run one real Gutenberg edition through it:
 copy or symlink `stencil-work/` to `~/.zcode/skills/stencil/` and drive
 a session with it — the live run is the skill's first real test.
 
-- [ ] Install the skill (`stencil-work/` → `~/.zcode/skills/stencil/`)
+- [x] Restructure to mimeo-congruent package form (DEC-009): uv/hatchling
+      package, `stencil/` with `gutenberg.py`/`emit.py` + `cli/` (one
+      Click module per command), pytest/mypy/ruff, 39 tests; CLI
+      re-validated end-to-end (Frankenstein on chapbook, 33 files; P&P
+      `--extra-heading`, 61 units); CLAUDE.md written;
+      `stencil-work/` reduced to SKILL.md driving the CLI
+- [ ] Install the skill (`stencil-work/` → `~/.zcode/skills/stencil/`;
+      the CLI is importable via `uv run --project ~/projects/stencil`)
 - [ ] One live Gutenberg edition end-to-end through the installed skill
 - [ ] Ingest helper for an Obsidian page (wikilinks, callouts, embeds,
       images)

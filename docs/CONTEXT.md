@@ -8,15 +8,17 @@ last_entry: 2
 
 ## Current Focus
 
-Phase 0 (Foundation) is complete and committed. Phase 1 is the
-Obsidian pilot, prefaced by installing the skill and running one real
-Gutenberg edition through it.
+The repo now has mimeo's code form (DEC-009): a uv/hatchling
+package with a Click CLI, driven by the SKILL.md judgment layer.
+Phase 1 (Obsidian pilot) is open, prefaced by installing the skill
+and a live Gutenberg run.
 
 ## Active Tasks
 
-- [ ] Install the skill: `stencil-work/` → `~/.zcode/skills/stencil/`
+- [ ] Install: `stencil-work/` → `~/.zcode/skills/stencil/`; CLI via
+      `uv run --project ~/projects/stencil stencil ...`
 - [ ] One live Gutenberg edition end-to-end through the installed skill
-- [ ] Obsidian ingest helper + post emitter (see Phase 1 checklist in
+- [ ] Obsidian ingest command + post emit (Phase 1 checklist in
       [IMPLEMENTATION.md](IMPLEMENTATION.md))
 
 ## Blockers
@@ -25,22 +27,20 @@ None.
 
 ## Context
 
-- `stencil-work/` is the installable skill dir (DEC-008): SKILL.md +
-      `ingest_gutenberg.py` + `emit_chapters.py`. 31 tests:
-      `python3 -m unittest discover -s tests`.
-- Ingest reports `warnings` (DEC-002); `--extra-heading REGEX` teaches
-      the split an edition's heading style (DEC-007).
-- Validated: Frankenstein #84 across chapbook/folio/pamphlet (33 files
-      each), P&P #1342 (61 units via `--extra-heading`), Republic #1497
-      (Jowett Introduction reported in the preamble; the pre-fix
-      20-unit output was silently corrupt). pandoc-resume refused
-      cleanly.
-- pamphlet's homepage title is page frontmatter, not `metadata.js` —
-      the skill's sweep step covers it.
-- Remote: `github.com/pborenstein/stencil`. The mimeo checkout is
-      clean; stencil work happens here only.
+- Code form (DEC-009): `stencil/gutenberg.py` + `stencil/emit.py`
+      (typed exceptions) under `stencil/cli/` (one Click module per
+      command, mimeo's form). `uv run stencil ingest-gutenberg ...`,
+      `uv run stencil emit-chapters ...`. 39 tests; mypy and ruff
+      clean; CLAUDE.md documents the form.
+- Skill layer: `stencil-work/SKILL.md` drives the CLI; decisions
+      (letters, titles, preamble routing, annotations) live there.
+- Ingest `warnings` + `--extra-heading` (DEC-007) unchanged in
+      behavior; validated again through the CLI (Frankenstein 28
+      units on chapbook, 33 files; P&P 61 units).
+- DEC-003 superseded, DEC-008 amended by DEC-009.
 
 ## Next Session
 
-Install the skill and drive one real Gutenberg edition through it as
-the live test, then start the Obsidian pilot per the Phase 1 checklist.
+Commit the restructure (uncommitted in the working tree), install
+the skill, drive one real Gutenberg edition through it, then start
+the Obsidian pilot.

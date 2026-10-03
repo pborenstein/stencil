@@ -1,47 +1,28 @@
-#!/usr/bin/env python3
-"""emit_chapters -- install stencil JSON into a chaptered mimeo site.
+"""Chapter emitter: install stencil JSON into a chaptered mimeo site.
 
-Usage:
-    python3 emit_chapters.py SITE/ ingested.json \
-        [--replace-demo] [--colophon] [--metadata] [--annotations ann.json]
+Nothing about a specific template is hardcoded (DEC-004). The probe
+reads the site checkout and the emitter imitates what it finds:
 
-SITE is a checkout of a chaptered site (eleventy-chapbook / -folio /
--pamphlet, or a site grown from one). The script PROBES the site first and
-imitates what it finds, so nothing about a specific template is hardcoded:
+- chapter naming convention, from the existing chapter filenames
+- chapter frontmatter keys, from an existing chapter file
+  (only ``title`` and ``order`` are filled; deks are writing)
+- loose-page navigation order, from pages like ``content/about.md``
+- ``content/_data/metadata.js`` (JS module, edited by key; the ``url``
+  key belongs to ``mimeo.template.json`` and is never touched)
 
-    - chapter naming convention, from the existing chapter filenames
-    - chapter frontmatter keys, from an existing chapter file
-    - loose-page navigation order, from pages like content/about.md
-    - content/_data/metadata.js (JS module, edited by key)
-
-Emits one file per ingested unit. Only fills frontmatter keys it recognizes
-(title, order); display titles, deks and descriptions are writing, not
-parsing -- the caller (model layer) edits those afterwards.
-
-Optional stages:
-    --colophon     write content/colophon.md carrying the PG book info
-                   and the full Project Gutenberg license tail
-    --metadata     update title / description / language / author.name in
-                   content/_data/metadata.js. The url key belongs to
-                   mimeo.template.json and is never touched.
-    --annotations  interleave <details><summary>…</summary>…</details>
-                   blocks between source paragraphs (the amalgamedon.com
-                   convention). The annotation file is written by the
-                   model layer; this script only places the blocks:
-
-                   [{"chapter": 1, "after_paragraph": 2,
-                     "summary": "…", "text": "…"}, …]
-
-                   chapter is the ingest order; after_paragraph is 1-based.
+Annotations are agent-written (DEC-006); this module only places the
+collapsed ``<details><summary>`` blocks between source paragraphs.
 """
 
-import json
 import re
-import sys
 from pathlib import Path
 
 LANG_MAP = {"english": "en", "german": "de", "french": "fr", "spanish": "es",
             "italian": "it", "dutch": "nl", "portuguese": "pt"}
+
+
+class EmitError(Exception):
+    """Raised when the target site is not a chaptered site."""
 
 
 def slugify(s: str) -> str:
@@ -53,13 +34,25 @@ def js_escape(s: str) -> str:
     return s.replace("\\", "\\\\").replace('"', '\\"')
 
 
-# ---------------------------------------------------------------- probe
-
 def probe(site: Path) -> dict:
+    """Probe a chaptered site checkout for its local conventions.
+
+    Args:
+        site: Path to the site checkout root.
+
+    Returns:
+        A dict with ``naming``, ``frontmatter_keys``,
+        ``demo_chapters``, ``nav_next_order``, and ``metadata_js``.
+
+    Raises:
+        EmitError: If ``content/chapters/`` does not exist -- the
+            pandoc templates take a single root file and are not
+            chapter targets.
+    """
     chdir = site / "content" / "chapters"
     if not chdir.is_dir():
-        sys.exit(
-            f"error: {chdir} does not exist -- not a chaptered site "
+        raise EmitError(
+            f"{chdir} does not exist -- not a chaptered site "
             "(eleventy-chapbook / -folio / -pamphlet, or a site grown from one). "
             "The pandoc templates take a single root file and are not chapter targets."
         )
@@ -81,7 +74,7 @@ def probe(site: Path) -> dict:
 
     nav_orders = []
     for p in sorted((site / "content").glob("*.md")):
-        m = re.search(r"^\s+order:\s*(\d+)\s*$", p.read_text(encoding="utf-8"), re.M)
+        m = re.search(r"^\s+order:\s*(\d+)\s*$", p.read_text(encoding="utf-8"), re.MULTILINE)
         if m:
             nav_orders.append(int(m.group(1)))
 
@@ -94,13 +87,17 @@ def probe(site: Path) -> dict:
     }
 
 
-# ---------------------------------------------------------------- emit
+def emit_chapters(site: Path, units: list, pr: dict, replace_demo: bool) -> list[str]:
+    """Write one file per unit, imitating the probed naming convention.
 
-def emit_chapters(site: Path, units: list, pr: dict, replace_demo: bool) -> None:
+    Demo chapters are removed only when ``replace_demo`` is set;
+    non-demo content is never touched.
+    """
     chdir = site / "content" / "chapters"
     if replace_demo:
         for name in pr["demo_chapters"]:
             (chdir / name).unlink()
+    written = []
     for u in units:
         fname = pr["naming"].format(order=u["order"], slug=slugify(u["heading"]))
         fm = []
@@ -112,13 +109,15 @@ def emit_chapters(site: Path, units: list, pr: dict, replace_demo: bool) -> None
         (chdir / fname).write_text(
             "---\n" + "\n".join(fm) + "\n---\n\n" + u["text"] + "\n", encoding="utf-8"
         )
-        print("chapter:", fname)
+        written.append(fname)
+    return written
 
 
-def emit_colophon(site: Path, ingested: dict, pr: dict) -> None:
+def emit_colophon(site: Path, ingested: dict, pr: dict) -> Path:
+    """Write ``content/colophon.md`` with the PG book info and full license."""
     meta = ingested["meta"]
     lines = ["---", "title: Colophon", "eleventyNavigation:",
-             f"  key: Colophon", f"  order: {pr['nav_next_order']}", "---", "",
+             "  key: Colophon", f"  order: {pr['nav_next_order']}", "---", "",
              "# [{{ title }}](/)", ""]
     if meta.get("source_url"):
         lines.append(f"This edition was installed from "
@@ -131,11 +130,17 @@ def emit_colophon(site: Path, ingested: dict, pr: dict) -> None:
         if meta.get(key):
             lines.append(f"- **{label}:** {meta[key]}")
     lines += ["", "## Project Gutenberg license", "", ingested["license"], ""]
-    (site / "content" / "colophon.md").write_text("\n".join(lines), encoding="utf-8")
-    print("page: content/colophon.md")
+    path = site / "content" / "colophon.md"
+    path.write_text("\n".join(lines), encoding="utf-8")
+    return path
 
 
-def update_metadata_js(site: Path, ingested: dict) -> None:
+def update_metadata_js(site: Path, ingested: dict) -> list[str]:
+    """Update title / description / language / author.name in metadata.js.
+
+    The ``url`` key belongs to ``mimeo.template.json`` and is never
+    touched. Returns the list of keys actually changed.
+    """
     path = site / "content" / "_data" / "metadata.js"
     src = path.read_text(encoding="utf-8")
     meta = ingested["meta"]
@@ -143,69 +148,47 @@ def update_metadata_js(site: Path, ingested: dict) -> None:
     if meta.get("author"):
         desc += f" by {meta['author']}"
     desc += "."
-    changed = []
+    changed: list[str] = []
 
     def set_flat(key: str, value: str) -> None:
         nonlocal src
         esc = js_escape(value)
         new = re.sub(rf'^(\s*{key}:\s*)"[^"]*"(,?)\s*$',
-                     rf'\g<1>"{esc}"\g<2>', src, flags=re.M)
+                     rf'\g<1>"{esc}"\g<2>', src, flags=re.MULTILINE)
         if new != src:
             src = new
             changed.append(key)
 
-    set_flat("title", meta.get("title", ""))
+    set_flat("title", str(meta.get("title", "")))
     set_flat("description", desc)
-    if meta.get("language", "").lower() in LANG_MAP:
-        set_flat("language", LANG_MAP[meta["language"].lower()])
+    if str(meta.get("language", "")).lower() in LANG_MAP:
+        set_flat("language", LANG_MAP[str(meta["language"]).lower()])
 
     if meta.get("author"):
         am = re.search(r"\bauthor:\s*\{[^}]*\}", src)
         if am:
             block = am.group(0)
-            new_block = re.sub(r'(\bname:\s*)"[^"]*"', rf'\g<1>"{js_escape(meta["author"])}"', block)
+            new_block = re.sub(r'(\bname:\s*)"[^"]*"',
+                               rf'\g<1>"{js_escape(str(meta["author"]))}"', block)
             if new_block != block:
                 src = src.replace(block, new_block)
                 changed.append("author.name")
 
     path.write_text(src, encoding="utf-8")
-    print("metadata.js:", ", ".join(changed) if changed else "no keys matched (nothing written)")
+    return changed
 
 
-def apply_annotations(units: list, ann_path: str) -> None:
-    anns = json.load(open(ann_path, encoding="utf-8"))
-    for a in sorted(anns, key=lambda a: (a["chapter"], -a["after_paragraph"])):
+def apply_annotations(units: list, annotations: list) -> int:
+    """Interleave collapsed details blocks between source paragraphs.
+
+    ``chapter`` is the ingest order; ``after_paragraph`` is 1-based.
+    Returns the number of annotations placed.
+    """
+    for a in sorted(annotations, key=lambda a: (a["chapter"], -a["after_paragraph"])):
         u = units[a["chapter"] - 1]
         paras = u["text"].split("\n\n")
         block = (f'<details>\n<summary>{a["summary"]}</summary>\n\n'
                  f'{a["text"]}\n\n</details>')
         paras.insert(a["after_paragraph"], block)
         u["text"] = "\n\n".join(paras)
-    print(f"annotations: {len(anns)} placed")
-
-
-# ---------------------------------------------------------------- main
-
-def main() -> None:
-    args = sys.argv[1:]
-    if len(args) < 2:
-        sys.exit(__doc__)
-    site = Path(args[0])
-    ingested = json.load(open(args[1], encoding="utf-8"))
-    pr = probe(site)
-    print("probe:", json.dumps(pr))
-
-    if "--annotations" in args:
-        apply_annotations(ingested["units"], args[args.index("--annotations") + 1])
-    emit_chapters(site, ingested["units"], pr, "--replace-demo" in args)
-    if "--colophon" in args:
-        emit_colophon(site, ingested, pr)
-    if "--metadata" in args:
-        if pr["metadata_js"]:
-            update_metadata_js(site, ingested)
-        else:
-            print("metadata.js: not found, skipped")
-
-
-if __name__ == "__main__":
-    main()
+    return len(annotations)
