@@ -120,3 +120,12 @@ author, two `<details>` annotations rendered in place.
 - **Landing-page fill** — product/service section schemas are the
   most structured targets; an agent-written sections JSON against the
   zod schemas.
+
+## Development documentation
+
+- [docs/CONTEXT.md](docs/CONTEXT.md) — current session state; read
+  this first when picking up work
+- [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md) — phase progress
+  and task lists
+- [docs/DECISIONS.md](docs/DECISIONS.md) — architectural decisions
+- [docs/chronicles/](docs/chronicles/) — session history by phase
