@@ -2,16 +2,17 @@
 phase: 1
 phase_name: Obsidian pilot
 updated: 2026-10-03
-last_commit: 712326c
-last_entry: 4
+last_commit: 184ff19
+last_entry: 5
 ---
 
 ## Current Focus
 
-The skill is installed and live-validated: Gatsby #64317 ran
-end-to-end into 002375.xyz (folio), build gate clean, chapter text
-byte-identical. The pilot surfaced three CLI/skill contract findings,
-queued as tasks; Phase 1 proper (Obsidian ingest + post emit) follows.
+The skill is installed and live-validated on two templates: Gatsby
+#64317 into 002375.xyz (folio) and 002374.xyz (chapbook), both build
+gates clean, chapter text byte-identical. The three pilot findings
+are confirmed template-independent; Phase 1 proper (Obsidian ingest +
+post emit) follows them.
 
 ## Active Tasks
 
@@ -21,6 +22,8 @@ queued as tasks; Phase 1 proper (Obsidian ingest + post emit) follows.
       numeral TOC became 9 empty units, front matter trapped in one)
 - [ ] emit-chapters probe: don't lose frontmatter keys when
       chapters/ is empty (folio re-emit probed `title,order` only)
+- [ ] SKILL.md: note per-template front-matter routing targets
+      (folio: about page; chapbook: homepage foreword slot)
 - [ ] Obsidian ingest command + post emitter (Phase 1 checklist in
       [IMPLEMENTATION.md](IMPLEMENTATION.md))
 
@@ -31,19 +34,17 @@ None.
 ## Context
 
 - Skill installed at `~/.zcode/skills/stencil/`; CLI via
-  `uv run --project ~/projects/stencil stencil ...`. Auto-trigger
-  untested (the pilot session followed SKILL.md as a document).
-- Pilot detail and findings: Entry 4 in
+  `uv run --project ~/projects/stencil stencil ...`.
+- Pilot detail: Entries 4–5 in
   [chronicles/phase-1-obsidian.md](chronicles/phase-1-obsidian.md).
-- Gatsby heading style: indented bare roman numerals on CRLF;
-  `--extra-heading '^\s*[IVXLCDM]{1,7}\s*$'` recovers all 9 —
-  verify match count in book.txt before trusting it.
-- Site work for the pilot is uncommitted in
-  `~/projects/mimeo-sites/002375.xyz` (user's call); run artifacts
-  in `/tmp/stencil-run/64317/`.
+- Gatsby headings: indented bare roman numerals on CRLF;
+  `--extra-heading '^\s*[IVXLCDM]{1,7}\s*$'` recovers all 9.
+- Probe fidelity is good with demo chapters present; degrades only
+  when chapters/ is empty.
+- Site checkouts hold uncommitted pilot work; artifacts in
+  `/tmp/stencil-run/64317/`.
 
 ## Next Session
 
-Close the three pilot findings (small, well-scoped CLI work) or go
-straight to the Obsidian ingest command; the findings also block
-clean retitling flows, so they are the better first move.
+Close the three CLI findings (small, well-scoped; the title one now
+confirmed twice), then start the Obsidian ingest command.
