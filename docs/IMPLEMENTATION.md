@@ -30,8 +30,9 @@ a session with it — the live run is the skill's first real test.
 - [x] Install the skill (`stencil-work/` → `~/.zcode/skills/stencil/`;
       the CLI is importable via `uv run --project ~/projects/stencil`)
 - [x] One live Gutenberg edition end-to-end through the installed skill
-      (2026-10-03: Gatsby #64317 → 002375.xyz on folio, build gate clean,
-      chapter text byte-identical; findings below and in Entry 4)
+      (2026-10-03: Gatsby #64317 → 002375.xyz on folio and 002374.xyz on
+      chapbook, build gates clean, chapter text byte-identical; findings
+      below and in Entries 4–5)
 - [ ] emit-chapters honors a JSON-level unit `title` over the
       heading-derived default — SKILL.md's documented rename path; the
       pilot had to set incipit titles on emitted files instead

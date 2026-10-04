@@ -1,5 +1,24 @@
 # Phase 1: Obsidian Pilot
 
+## Entry 5: Second template, same book — chapbook confirms the findings (2026-10-03)
+
+**What**: Re-ran Gatsby #64317 end-to-end into 002374.xyz (chapbook), reusing the worked `ingested.json`. Build gate clean (14 files), chapter text byte-identical. No stencil code changed.
+
+**Why**: Establish that the skill workflow and the emit probe hold on a second template, and whether the Entry 4 findings are template-specific.
+
+**How**:
+
+- Probe imitated chapbook conventions correctly on its own: `chNN-slug.md` naming, `title,order,description` keys, no `chapterNumber` invented. Demo `description` key left unset — inventing nine one-liners is content, not mechanics
+- JSON-title mismatch re-confirmed as template-independent; incipit titles applied by editing emitted files, same workaround as folio
+- Chapbook's homepage foreword slot (demo text literally asks for "epigraph, dedication, or opening passage") is the natural front-matter routing target: dedication as the drop-cap line, epigraph as a verse blockquote. Better fit than folio's about-page routing — routing targets are per-template, a skill-text concern
+- Chapbook ships an empty metadata `subtitle` — no sweep needed there, unlike folio
+
+**Findings**: all three Entry 4 findings stand unchanged. New minor: front-matter routing targets differ per template (folio: about page; chapbook: homepage foreword) — belongs in SKILL.md, not the CLI.
+
+**Decisions**: none.
+
+**Files**: site work uncommitted in `~/projects/mimeo-sites/002374.xyz`; run artifacts in `/tmp/stencil-run/64317/`
+
 ## Entry 4: Gatsby through the installed skill — the live run works; three contract findings (2026-10-03)
 
 **What**: Installed the skill (`stencil-work/` → `~/.zcode/skills/stencil/`) and drove one live edition end-to-end: The Great Gatsby (#64317) into 002375.xyz (folio). Fetch, ingest, warnings worked in the JSON, emit with `--replace-demo --colophon --metadata`, sweep, build gate clean (14 files); all 9 chapters verified byte-identical to the ingested text. No stencil-repo code changed — the run's value is what it surfaced.
