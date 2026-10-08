@@ -14,7 +14,9 @@ Annotations are agent-written (DEC-006); this module only places the
 collapsed ``<details><summary>`` blocks between source paragraphs.
 """
 
+import json
 import re
+import subprocess
 from pathlib import Path
 
 LANG_MAP = {"english": "en", "german": "de", "french": "fr", "spanish": "es",
@@ -32,6 +34,31 @@ def slugify(s: str) -> str:
 
 def js_escape(s: str) -> str:
     return s.replace("\\", "\\\\").replace('"', '\\"')
+
+
+def _committed_chapter(site: Path) -> tuple[str, str] | None:
+    """Return (name, text) of the first chapter committed at the site's HEAD.
+
+    A chapters/ dir emptied by ``--replace-demo`` (or by hand) still has
+    its template's chapters in git; they are the only remaining record
+    of the template's frontmatter keys. None if the site is not a git
+    checkout or HEAD holds no chapters.
+    """
+    def git(*args: str) -> str | None:
+        try:
+            r = subprocess.run(["git", "-C", str(site), *args], capture_output=True,
+                               text=True, encoding="utf-8", check=True)
+        except (OSError, subprocess.CalledProcessError):
+            return None
+        return r.stdout
+
+    listing = git("ls-tree", "--name-only", "HEAD", "content/chapters/")
+    names = sorted(n.rsplit("/", 1)[-1] for n in (listing or "").splitlines()
+                   if n.endswith(".md"))
+    if not names:
+        return None
+    text = git("show", f"HEAD:content/chapters/{names[0]}")
+    return (names[0], text) if text is not None else None
 
 
 def probe(site: Path) -> dict:
@@ -57,17 +84,22 @@ def probe(site: Path) -> dict:
             "The pandoc templates take a single root file and are not chapter targets."
         )
     demos = sorted(chdir.glob("*.md"))
-    if not demos:
+    if demos:
+        sample: tuple[str, str] | None = (demos[0].name,
+                                          demos[0].read_text(encoding="utf-8"))
+    else:
+        sample = _committed_chapter(site)
+    if sample is None:
         naming, keys = "{order:02d}-{slug}.md", ["title", "order"]
     else:
-        m = re.match(r"^([a-z]+)(\d+)-(.+)\.md$", demos[0].name)
+        name, text = sample
+        m = re.match(r"^([a-z]+)(\d+)-(.+)\.md$", name)
         if m:
             prefix, digits, _ = m.groups()
             naming = f"{prefix}{{order:0{len(digits)}d}}-{{slug}}.md"
         else:
             naming = "{order:02d}-{slug}.md"
         keys = []
-        text = demos[0].read_text(encoding="utf-8")
         if text.startswith("---"):
             fm = text.split("---")[1]
             keys = [ln.split(":")[0].strip() for ln in fm.strip().splitlines() if ":" in ln]
@@ -99,11 +131,12 @@ def emit_chapters(site: Path, units: list, pr: dict, replace_demo: bool) -> list
             (chdir / name).unlink()
     written = []
     for u in units:
-        fname = pr["naming"].format(order=u["order"], slug=slugify(u["heading"]))
+        title = u.get("title") or u["heading"]
+        fname = pr["naming"].format(order=u["order"], slug=slugify(title))
         fm = []
         for k in pr["frontmatter_keys"]:
             if k == "title":
-                fm.append(f'title: "{u["heading"]}"')
+                fm.append("title: " + json.dumps(title, ensure_ascii=False))
             elif k == "order":
                 fm.append(f"order: {u['order']}")
         (chdir / fname).write_text(

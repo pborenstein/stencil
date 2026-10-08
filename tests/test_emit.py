@@ -2,6 +2,7 @@
 and the metadata.js contract (url never touched)."""
 
 import json
+import subprocess
 
 import pytest
 
@@ -52,6 +53,21 @@ def test_nav_next_order_after_about():
 
 def test_empty_chapters_dir_gets_defaults():
     assert probe(SiteFixture(naming=()).root)["frontmatter_keys"] == ["title", "order"]
+
+
+def test_emptied_chapters_dir_keeps_committed_frontmatter_keys():
+    fx = SiteFixture()
+    git = ["git", "-C", str(fx.root), "-c", "user.name=t", "-c", "user.email=t@t"]
+    subprocess.run([*git, "init", "-q"], check=True)
+    subprocess.run([*git, "add", "."], check=True)
+    subprocess.run([*git, "commit", "-q", "-m", "template"], check=True)
+    emit_chapters(fx.root, INGESTED["units"], probe(fx.root), replace_demo=True)
+    for p in (fx.root / "content" / "chapters").glob("*.md"):
+        p.unlink()
+    pr = probe(fx.root)
+    assert pr["frontmatter_keys"] == ["title", "order", "description"]
+    assert pr["naming"] == "ch{order:02d}-{slug}.md"
+    assert pr["demo_chapters"] == []
 
 
 def test_missing_chapters_dir_raises():
@@ -131,3 +147,18 @@ def test_two_annotations_same_chapter_keep_positions(tmp_path):
     text = units[1]["text"]
     assert text.index("<summary>One</summary>") < text.index("Para two.")
     assert text.index("Para two.") < text.index("<summary>Two</summary>")
+
+
+def test_unit_title_overrides_heading(tmp_path):
+    fx = SiteFixture(naming=())
+    pr = probe(fx.root)
+    units = [
+        {"heading": "Chapter 1", "title": 'The "Gold" Hat', "order": 1, "text": "x"},
+        {"heading": "Chapter 2", "order": 2, "text": "y"},
+    ]
+    written = emit_chapters(fx.root, units, pr, replace_demo=False)
+    chdir = fx.root / "content" / "chapters"
+    first = (chdir / written[0]).read_text(encoding="utf-8")
+    assert 'title: "The \\"Gold\\" Hat"' in first
+    assert "gold-hat" in written[0]
+    assert 'title: "Chapter 2"' in (chdir / written[1]).read_text(encoding="utf-8")
