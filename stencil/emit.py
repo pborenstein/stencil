@@ -14,6 +14,7 @@ Annotations are agent-written (DEC-006); this module only places the
 collapsed ``<details><summary>`` blocks between source paragraphs.
 """
 
+import json
 import re
 import subprocess
 from pathlib import Path
@@ -130,11 +131,12 @@ def emit_chapters(site: Path, units: list, pr: dict, replace_demo: bool) -> list
             (chdir / name).unlink()
     written = []
     for u in units:
-        fname = pr["naming"].format(order=u["order"], slug=slugify(u["heading"]))
+        title = u.get("title") or u["heading"]
+        fname = pr["naming"].format(order=u["order"], slug=slugify(title))
         fm = []
         for k in pr["frontmatter_keys"]:
             if k == "title":
-                fm.append(f'title: "{u["heading"]}"')
+                fm.append("title: " + json.dumps(title, ensure_ascii=False))
             elif k == "order":
                 fm.append(f"order: {u['order']}")
         (chdir / fname).write_text(

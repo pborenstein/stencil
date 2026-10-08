@@ -147,3 +147,18 @@ def test_two_annotations_same_chapter_keep_positions(tmp_path):
     text = units[1]["text"]
     assert text.index("<summary>One</summary>") < text.index("Para two.")
     assert text.index("Para two.") < text.index("<summary>Two</summary>")
+
+
+def test_unit_title_overrides_heading(tmp_path):
+    fx = SiteFixture(naming=())
+    pr = probe(fx.root)
+    units = [
+        {"heading": "Chapter 1", "title": 'The "Gold" Hat', "order": 1, "text": "x"},
+        {"heading": "Chapter 2", "order": 2, "text": "y"},
+    ]
+    written = emit_chapters(fx.root, units, pr, replace_demo=False)
+    chdir = fx.root / "content" / "chapters"
+    first = (chdir / written[0]).read_text(encoding="utf-8")
+    assert 'title: "The \\"Gold\\" Hat"' in first
+    assert "gold-hat" in written[0]
+    assert 'title: "Chapter 2"' in (chdir / written[1]).read_text(encoding="utf-8")
