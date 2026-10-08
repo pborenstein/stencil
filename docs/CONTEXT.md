@@ -19,7 +19,7 @@ The three pilot findings are template-independent; Phase 1 proper
       heading-derived default (SKILL.md documents the JSON path)
 - [ ] ingest-gutenberg: drop or flag TOC-shell units (Gatsby's
       numeral TOC became 9 empty units, front matter trapped in one)
-- [ ] emit-chapters probe: don't lose frontmatter keys when
+- [x] emit-chapters probe: don't lose frontmatter keys when
       chapters/ is empty (folio re-emit probed `title,order` only)
 - [ ] SKILL.md: note per-template front-matter routing targets
       (folio: about page; chapbook: homepage foreword slot)
