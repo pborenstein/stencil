@@ -1,32 +1,28 @@
 ---
 phase: 1
 phase_name: Obsidian pilot
-updated: 2026-10-07
-last_commit: c2018ba
+updated: 2026-10-08
+last_commit: a70ed65
 last_entry: 6
 ---
 
 ## Current Focus
 
-Skill live-validated on two templates (Gatsby #64317 into 002375.xyz
-folio and 002374.xyz chapbook; build gates clean, text byte-identical).
-The three pilot findings are template-independent; Phase 1 proper
-(Obsidian ingest + post emit) follows them.
+Phase 1 code and skill text are complete: `ingest-obsidian`,
+`emit-post`, and the skill sections for front-matter routing and
+agent-written excerpt/date/tags are merged. What remains is a live
+run of an Obsidian page onto a real blog-style site (build gate), plus
+the chronicle entry and phase close-out.
 
 ## Active Tasks
 
-- [x] emit-chapters: honor a JSON-level unit `title` over the
-      heading-derived default (SKILL.md documents the JSON path)
-- [x] ingest-gutenberg: drop or flag TOC-shell units (Gatsby's
-      numeral TOC became 9 empty units, front matter trapped in one)
-- [x] emit-chapters probe: don't lose frontmatter keys when
-      chapters/ is empty (folio re-emit probed `title,order` only)
-- [x] SKILL.md: note per-template front-matter routing targets
-      (folio: about page; chapbook: homepage foreword slot)
-- [x] Obsidian ingest command (`ingest-obsidian`)
-- [x] Post emitter (`emit-post`; probes content/posts/, pages/)
-- [ ] Skill text for agent-written excerpt/date/tags (Phase 1
-      checklist in [IMPLEMENTATION.md](IMPLEMENTATION.md))
+- [x] Pilot findings closed (unit title override, TOC-shell units,
+      empty-chapters probe, front-matter routing note)
+- [x] `ingest-obsidian` and `emit-post` (DEC-004 form)
+- [x] Skill text for excerpt, date, tags
+- [ ] Live run: one Obsidian page onto a blog-style site; confirm
+      the inferred image directory and public image URL against a
+      real build, then close Phase 1
 
 ## Blockers
 
@@ -48,5 +44,5 @@ None.
 
 ## Next Session
 
-Close the three CLI findings (small, well-scoped; the title one now
-confirmed twice), then start the Obsidian ingest command.
+Run the live Obsidian-to-blog pass, fix what the build gate finds,
+write the chronicle entry, and close Phase 1.
