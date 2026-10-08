@@ -21,7 +21,7 @@ The three pilot findings are template-independent; Phase 1 proper
       numeral TOC became 9 empty units, front matter trapped in one)
 - [x] emit-chapters probe: don't lose frontmatter keys when
       chapters/ is empty (folio re-emit probed `title,order` only)
-- [ ] SKILL.md: note per-template front-matter routing targets
+- [x] SKILL.md: note per-template front-matter routing targets
       (folio: about page; chapbook: homepage foreword slot)
 - [ ] Obsidian ingest command + post emitter (Phase 1 checklist in
       [IMPLEMENTATION.md](IMPLEMENTATION.md))

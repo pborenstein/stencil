@@ -52,6 +52,13 @@ development form; this skill documents the driving form.
      metadata carries the title); prefaces and introductions usually
      become a chapter or an about page. Edit `ingested.json` to add
      units or move text — you are the model layer; the JSON is yours.
+   - Front matter lands in a different place on each template; look
+     at the site before choosing. On eleventy-folio, a preface or
+     introduction belongs on the about page (`content/about.md`). On
+     eleventy-chapbook, it belongs in the homepage foreword slot
+     (`content/index.md`). If the template has neither, make it a
+     leading chapter. Probe the site (read `content/*.md`) rather than
+     assuming the template.
    - Decide display titles. `Chapter 1` is a heading, not a title.
      Rename titles in the JSON when the brief wants real ones (for
      folio, `chapterNumber` roman numerals and `dek` subtitles are
