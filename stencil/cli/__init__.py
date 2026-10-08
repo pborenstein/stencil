@@ -4,6 +4,7 @@ import click
 
 from .. import __version__
 from .emit_chapters import emit_chapters
+from .emit_post import emit_post
 from .ingest_gutenberg import ingest_gutenberg
 from .ingest_obsidian import ingest_obsidian
 
@@ -17,10 +18,12 @@ def main() -> None:
 main.add_command(ingest_gutenberg)
 main.add_command(ingest_obsidian)
 main.add_command(emit_chapters)
+main.add_command(emit_post)
 
 
 __all__ = [
     "emit_chapters",
+    "emit_post",
     "ingest_gutenberg",
     "ingest_obsidian",
     "main",

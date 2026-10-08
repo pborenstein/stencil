@@ -45,7 +45,7 @@ a session with it — the live run is the skill's first real test.
       `title,order` only, losing folio's `chapterNumber,dek` keys
 - [x] Ingest helper for an Obsidian page (wikilinks, callouts, embeds,
       images)
-- [ ] Post emitter probing `content/posts/` + `content/pages/` the way
+- [x] Post emitter probing `content/posts/` + `content/pages/` the way
       `emit_chapters.py` probes chapters
 - [ ] Agent-written excerpt / date / tags for a post
 
