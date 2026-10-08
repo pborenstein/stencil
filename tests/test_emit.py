@@ -2,6 +2,7 @@
 and the metadata.js contract (url never touched)."""
 
 import json
+import subprocess
 
 import pytest
 
@@ -52,6 +53,21 @@ def test_nav_next_order_after_about():
 
 def test_empty_chapters_dir_gets_defaults():
     assert probe(SiteFixture(naming=()).root)["frontmatter_keys"] == ["title", "order"]
+
+
+def test_emptied_chapters_dir_keeps_committed_frontmatter_keys():
+    fx = SiteFixture()
+    git = ["git", "-C", str(fx.root), "-c", "user.name=t", "-c", "user.email=t@t"]
+    subprocess.run([*git, "init", "-q"], check=True)
+    subprocess.run([*git, "add", "."], check=True)
+    subprocess.run([*git, "commit", "-q", "-m", "template"], check=True)
+    emit_chapters(fx.root, INGESTED["units"], probe(fx.root), replace_demo=True)
+    for p in (fx.root / "content" / "chapters").glob("*.md"):
+        p.unlink()
+    pr = probe(fx.root)
+    assert pr["frontmatter_keys"] == ["title", "order", "description"]
+    assert pr["naming"] == "ch{order:02d}-{slug}.md"
+    assert pr["demo_chapters"] == []
 
 
 def test_missing_chapters_dir_raises():
