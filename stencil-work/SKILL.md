@@ -103,6 +103,19 @@ development form; this skill documents the driving form.
    and anything left for the user (uncommitted changes, open
    judgment calls you made).
 
+## Obsidian pages
+
+For an Obsidian page, ingest with:
+
+    stencil ingest-obsidian PAGE.md [--vault VAULT/] > page.json
+
+The helper flattens wikilinks to display text, turns image embeds into
+Markdown images, turns callouts into blockquotes, and strips comments.
+Read its `warnings` and `links` first: note embeds are left as text
+and need your call (inline the note, link it, or drop it); unresolved
+wikilinks are listed so you can decide which become real links. Images
+are listed in `images` with their source paths.
+
 ## Judgment calls you own
 
 - Letter units: chapters, an about-page frame note, or both.
