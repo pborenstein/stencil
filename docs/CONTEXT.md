@@ -1,9 +1,9 @@
 ---
 phase: 1
 phase_name: Obsidian pilot
-updated: 2026-10-03
-last_commit: 184ff19
-last_entry: 5
+updated: 2026-10-07
+last_commit: c2018ba
+last_entry: 6
 ---
 
 ## Current Focus
@@ -37,10 +37,13 @@ None.
   `uv run --project ~/projects/stencil stencil ...`.
 - Pilot detail: Entries 4–5 in
   [chronicles/phase-1-obsidian.md](chronicles/phase-1-obsidian.md).
+- handoff/plinth skills vendored in `.claude/skills/` for cloud
+  sessions (DEC-010); canonical copies in `~/projects/claude-plugins`.
+- Idea, not a task: epub export from the ingest JSON, for reading
+  outside the browser. Reading-interface notes are in the amoxtli
+  vault (`Reading long prose in a browser`).
 - Gatsby headings: indented bare roman numerals on CRLF;
   `--extra-heading '^\s*[IVXLCDM]{1,7}\s*$'` recovers all 9.
-- Probe fidelity is good with demo chapters present; degrades only
-  when chapters/ is empty.
 - Site checkouts hold uncommitted pilot work; artifacts in
   `/tmp/stencil-run/64317/`.
 

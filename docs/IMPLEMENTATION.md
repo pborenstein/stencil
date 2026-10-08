@@ -33,6 +33,8 @@ a session with it — the live run is the skill's first real test.
       (2026-10-03: Gatsby #64317 → 002375.xyz on folio and 002374.xyz on
       chapbook, build gates clean, chapter text byte-identical; findings
       below and in Entries 4–5)
+- [x] Vendor handoff and plinth skills into `.claude/skills/` for cloud
+      sessions (DEC-010, 2026-10-07)
 - [ ] emit-chapters honors a JSON-level unit `title` over the
       heading-derived default — SKILL.md's documented rename path; the
       pilot had to set incipit titles on emitted files instead

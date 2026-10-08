@@ -132,6 +132,20 @@ DEC-001 through DEC-006 were documented retroactively on 2026-10-03 from the REA
 
 ---
 
+### DEC-010: handoff and plinth skills are vendored into `.claude/skills/` (2026-10-07)
+
+**Status**: Active
+
+**Context**: Cloud sessions do not load plugins from the Mac app or `enabledPlugins`, but they do load a repo's `.claude/skills/`. CLAUDE.md's pickup/wrapup workflow depends on `session-pickup` and `session-wrapup`.
+
+**Decision**: Copy the handoff and plinth skills verbatim into `.claude/skills/` and track them in this repo.
+
+**Alternatives considered**: Install the plugins from a marketplace (rejected for cloud use: the marketplace repo is private, and cloud sessions do not load app-installed plugins in any case).
+
+**Consequences**: Cloud sessions get the skills. The copies can drift from `~/projects/claude-plugins/{handoff,plinth}`, which remain canonical; update by re-copying.
+
+---
+
 ## Superseded/Deprecated
 
 - DEC-003 (stdlib-only single-file helpers) — superseded by DEC-009.

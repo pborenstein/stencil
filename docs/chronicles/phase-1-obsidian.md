@@ -1,5 +1,21 @@
 # Phase 1: Obsidian Pilot
 
+## Entry 6: Vendor handoff and plinth skills for cloud sessions (2026-10-07)
+
+**What**: Copied the nine handoff and plinth skills into `.claude/skills/` so cloud sessions on this repo get `session-pickup` and `session-wrapup` (which CLAUDE.md names). No stencil code changed.
+
+**Why**: Cloud sessions do not load plugins installed in the Mac app, but they do read a repo's `.claude/skills/`.
+
+**How**:
+
+- Copied verbatim from `~/projects/claude-plugins/{handoff,plinth}/skills/` with `assets/` and `references/` (42 files); `diff -r` clean per skill. First copy flattened the skills into one directory (macOS `cp -R dir/` copies contents); redone with the trailing slash stripped
+- `~/.gitignore_global` ignored `.claude/`, which hid the new directory from `git status`; removed that line (kept the `settings.local.json` rule)
+- Side thread: the plugins also became installable in the Claude app via a `tianquiztli` marketplace repo (private for now); not part of this repo
+
+**Decisions**: DEC-010 (vendored skills)
+
+**Files**: c2018ba (`.claude/skills/`)
+
 ## Entry 5: Second template, same book — chapbook confirms the findings (2026-10-03)
 
 **What**: Re-ran Gatsby #64317 end-to-end into 002374.xyz (chapbook), reusing the worked `ingested.json`. Build gate clean (14 files), chapter text byte-identical. No stencil code changed.
