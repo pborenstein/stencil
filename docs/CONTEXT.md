@@ -23,8 +23,9 @@ The three pilot findings are template-independent; Phase 1 proper
       chapters/ is empty (folio re-emit probed `title,order` only)
 - [x] SKILL.md: note per-template front-matter routing targets
       (folio: about page; chapbook: homepage foreword slot)
-- [ ] Obsidian ingest command + post emitter (Phase 1 checklist in
-      [IMPLEMENTATION.md](IMPLEMENTATION.md))
+- [x] Obsidian ingest command (`ingest-obsidian`)
+- [ ] Post emitter + agent-written excerpt/date/tags (Phase 1
+      checklist in [IMPLEMENTATION.md](IMPLEMENTATION.md))
 
 ## Blockers
 

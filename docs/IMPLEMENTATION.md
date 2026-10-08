@@ -43,7 +43,7 @@ a session with it — the live run is the skill's first real test.
       units (front matter trapped in the last)
 - [ ] Probe fallback when chapters/ is empty: the Gatsby re-emit probed
       `title,order` only, losing folio's `chapterNumber,dek` keys
-- [ ] Ingest helper for an Obsidian page (wikilinks, callouts, embeds,
+- [x] Ingest helper for an Obsidian page (wikilinks, callouts, embeds,
       images)
 - [ ] Post emitter probing `content/posts/` + `content/pages/` the way
       `emit_chapters.py` probes chapters
