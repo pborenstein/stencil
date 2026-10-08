@@ -1,0 +1,101 @@
+"""Configuration management for {{PROJECT_NAME}}."""
+
+import os
+import json
+from pathlib import Path
+from typing import Optional
+import yaml
+
+
+class Config:
+    """
+    Configuration loader for {{PROJECT_NAME}}.
+
+    Searches for configuration file in the following order:
+    1. Environment variable: {{PACKAGE_NAME_UPPER}}_CONFIG_PATH
+    2. ~/.config/{{PACKAGE_NAME}}/config.json (XDG standard)
+    3. ~/.{{PACKAGE_NAME}}.json
+    4. ./config.json (development)
+    """
+
+    def __init__(self, config_path: Optional[Path] = None):
+        """Initialize configuration."""
+        self.config_path = self._find_config(config_path)
+        self._config = self._load_config()
+
+    def _find_config(self, config_path: Optional[Path]) -> Path:
+        """Find configuration file."""
+        # 1. Explicitly provided path
+        if config_path:
+            if not config_path.exists():
+                raise FileNotFoundError(f"Configuration file not found: {config_path}")
+            return config_path
+
+        # 2. Environment variable
+        env_path = os.getenv("{{PACKAGE_NAME_UPPER}}_CONFIG_PATH")
+        if env_path:
+            path = Path(env_path).expanduser()
+            if path.exists():
+                return path
+
+        # 3. XDG config directory
+        xdg_config = Path.home() / ".config" / "{{PACKAGE_NAME}}" / "config.json"
+        if xdg_config.exists():
+            return xdg_config
+
+        # 4. Home directory dotfile
+        home_config = Path.home() / ".{{PACKAGE_NAME}}.json"
+        if home_config.exists():
+            return home_config
+
+        # 5. Current directory (development)
+        local_config = Path("config.json")
+        if local_config.exists():
+            return local_config
+
+        # If no config file found, raise error
+        raise FileNotFoundError(
+            f"No configuration file found. Create one of:\n"
+            f"  - ./config.json\n"
+            f"  - ~/.{{PACKAGE_NAME}}.json\n"
+            f"  - ~/.config/{{PACKAGE_NAME}}/config.json\n"
+            f"Or set {{PACKAGE_NAME_UPPER}}_CONFIG_PATH environment variable"
+        )
+
+    def _load_config(self) -> dict:
+        """Load and parse configuration file."""
+        if not self.config_path.exists():
+            raise FileNotFoundError(f"Configuration file not found: {self.config_path}")
+
+        # Determine format from extension
+        suffix = self.config_path.suffix.lower()
+
+        try:
+            with open(self.config_path, 'r') as f:
+                if suffix == '.json':
+                    return json.load(f)
+                elif suffix in ['.yaml', '.yml']:
+                    return yaml.safe_load(f)
+                else:
+                    # Try JSON first, fallback to YAML
+                    content = f.read()
+                    try:
+                        return json.loads(content)
+                    except json.JSONDecodeError:
+                        return yaml.safe_load(content)
+        except Exception as e:
+            raise ValueError(f"Failed to load configuration from {self.config_path}: {e}")
+
+    @property
+    def server_host(self) -> str:
+        """Get server host from config."""
+        return self._config.get("server", {}).get("host", "{{SERVER_HOST}}")
+
+    @property
+    def server_port(self) -> int:
+        """Get server port from config."""
+        return self._config.get("server", {}).get("port", {{SERVER_PORT}})
+
+    def get(self, key: str, default=None):
+        """Get configuration value by key."""
+        return self._config.get(key, default)

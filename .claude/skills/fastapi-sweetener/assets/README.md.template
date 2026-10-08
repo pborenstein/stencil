@@ -1,0 +1,152 @@
+# {{PROJECT_NAME}}
+
+{{DESCRIPTION}}
+
+## Quick Start
+
+```bash
+# Clone or create project directory
+mkdir {{PACKAGE_NAME}}
+cd {{PACKAGE_NAME}}
+
+# Install dependencies
+uv sync
+
+# Create configuration
+cp config.example.json config.json
+# Edit config.json with your settings
+
+# Run development server
+uv run {{PACKAGE_NAME}} --reload
+```
+
+The server will be available at:
+
+- API: http://localhost:{{SERVER_PORT}}
+- Interactive docs: http://localhost:{{SERVER_PORT}}/docs
+- Alternative docs: http://localhost:{{SERVER_PORT}}/redoc
+
+## Installation
+
+### Prerequisites
+
+- Python {{PYTHON_VERSION}}
+- [uv](https://github.com/astral-sh/uv) package manager
+
+```bash
+# Install uv if needed
+brew install uv
+```
+
+### Install Dependencies
+
+```bash
+uv sync
+```
+
+This creates a virtual environment in `.venv/` and installs all dependencies.
+
+## Configuration
+
+{{PROJECT_NAME}} searches for configuration files in this order:
+
+1. Path from `{{PACKAGE_NAME_UPPER}}_CONFIG_PATH` environment variable
+2. `~/.config/{{PACKAGE_NAME}}/config.json` (XDG standard)
+3. `~/.{{PACKAGE_NAME}}.json`
+4. `./config.json` (development)
+
+### Example Configuration
+
+```json
+{
+  "server": {
+    "host": "{{SERVER_HOST}}",
+    "port": {{SERVER_PORT}}
+  }
+}
+```
+
+Copy `config.example.json` to `config.json` and customize as needed.
+
+## Usage
+
+### Running the Server
+
+```bash
+# Production mode
+uv run {{PACKAGE_NAME}}
+
+# Development mode with auto-reload
+uv run {{PACKAGE_NAME}} --reload
+
+# Custom host and port
+uv run {{PACKAGE_NAME}} --host 127.0.0.1 --port 8080
+
+# With debug logging
+uv run {{PACKAGE_NAME}} --log-level debug
+```
+
+### CLI Options
+
+```
+usage: {{PACKAGE_NAME}} [-h] [--host HOST] [--port PORT] [--reload]
+                        [--log-level {debug,info,warning,error,critical}]
+                        [--version]
+
+options:
+  -h, --help            show this help message and exit
+  --host HOST           Host to bind to (default: {{SERVER_HOST}})
+  --port PORT           Port to bind to (default: {{SERVER_PORT}})
+  --reload              Enable auto-reload for development
+  --log-level LEVEL     Logging level (default: info)
+  --version             show program's version number and exit
+```
+
+### API Endpoints
+
+- `GET /` - API information
+- `GET /health` - Health check
+- `GET /docs` - Interactive API documentation (Swagger UI)
+- `GET /redoc` - Alternative API documentation (ReDoc)
+
+## Development
+
+### Running Tests
+
+```bash
+uv run pytest
+```
+
+### Type Checking
+
+```bash
+uv run mypy {{PACKAGE_NAME}}/
+```
+
+### Code Formatting
+
+```bash
+uv run ruff check {{PACKAGE_NAME}}/
+uv run ruff format {{PACKAGE_NAME}}/
+```
+
+## Project Structure
+
+```
+{{PACKAGE_NAME}}/
+├── pyproject.toml          # Project configuration
+├── config.example.json     # Example configuration
+├── {{PACKAGE_NAME}}/
+│   ├── __init__.py
+│   ├── __version__.py      # Version management
+│   ├── __main__.py         # CLI entry point
+│   ├── server.py           # FastAPI application
+│   └── config.py           # Configuration loader
+├── .gitignore
+├── .env.example
+└── README.md
+```
+
+## License
+
+[Add your license here]

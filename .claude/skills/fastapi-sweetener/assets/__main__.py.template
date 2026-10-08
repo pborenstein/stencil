@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+"""
+CLI entry point for {{PROJECT_NAME}}.
+"""
+
+import argparse
+import logging
+import uvicorn
+
+from {{PACKAGE_NAME}}.__version__ import __version__
+
+
+def main():
+    """Main entry point for the {{PROJECT_NAME}} server."""
+    parser = argparse.ArgumentParser(
+        description="{{DESCRIPTION}}"
+    )
+
+    parser.add_argument(
+        "--host",
+        default="{{SERVER_HOST}}",
+        help="Host to bind to (default: {{SERVER_HOST}})"
+    )
+
+    parser.add_argument(
+        "--port",
+        type=int,
+        default={{SERVER_PORT}},
+        help="Port to bind to (default: {{SERVER_PORT}})"
+    )
+
+    parser.add_argument(
+        "--reload",
+        action="store_true",
+        help="Enable auto-reload for development"
+    )
+
+    parser.add_argument(
+        "--log-level",
+        default="info",
+        choices=["debug", "info", "warning", "error", "critical"],
+        help="Logging level (default: info)"
+    )
+
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"{{PROJECT_NAME}} {__version__}"
+    )
+
+    args = parser.parse_args()
+
+    # Custom logging configuration
+    log_config = uvicorn.config.LOGGING_CONFIG.copy()
+    log_config["formatters"]["default"]["fmt"] = "%(asctime)s %(levelprefix)s %(message)s"
+    log_config["formatters"]["access"]["fmt"] = '%(asctime)s %(levelprefix)s %(client_addr)s - "%(request_line)s" %(status_code)s'
+
+    print(f"Starting {{PROJECT_NAME}} v{__version__}")
+    print(f"Server will be available at: http://{args.host}:{args.port}")
+    print(f"API documentation: http://{args.host}:{args.port}/docs")
+
+    # Run the server
+    uvicorn.run(
+        "{{PACKAGE_NAME}}.server:app",
+        host=args.host,
+        port=args.port,
+        reload=args.reload,
+        log_level=args.log_level,
+        log_config=log_config
+    )
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,66 @@
+# {{PROJECT_NAME}}
+
+{{DESCRIPTION}}
+
+## Vision
+
+[Describe the problem this project solves and the approach it takes]
+
+## Current Status
+
+**Phase**: Phase 0 - Research & Design
+
+[Describe current implementation status]
+
+## Features
+
+- [Feature 1]
+- [Feature 2]
+- [Feature 3]
+
+## Quick Start
+
+### Prerequisites
+
+- Python {{PYTHON_VERSION}}
+- [uv](https://github.com/astral-sh/uv) package manager
+
+### Installation
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd {{PROJECT_NAME}}
+
+# Install dependencies
+uv sync
+
+# Run the application
+uv run {{PACKAGE_NAME}} --help
+```
+
+## Development
+
+See [CLAUDE.md](./CLAUDE.md) for development guide and AI session instructions.
+
+See [docs/IMPLEMENTATION.md](./docs/IMPLEMENTATION.md) for phase-based implementation tracking.
+
+## Project Structure
+
+```
+{{PROJECT_NAME}}/
+├── {{PACKAGE_NAME}}/     # Main package
+│   └── cli.py            # CLI entry point
+├── tests/                # Test suite
+├── docs/                 # Documentation
+│   ├── CONTEXT.md        # Current session state
+│   ├── IMPLEMENTATION.md # Phase tracking
+│   ├── DECISIONS.md      # Architectural decisions
+│   └── chronicles/       # Session history
+├── pyproject.toml        # Project configuration
+└── README.md             # This file
+```
+
+## License
+
+[Add license information]

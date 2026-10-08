@@ -1,0 +1,17 @@
+#!/bin/bash
+# Helper script to view {{PROJECT_NAME}} logs
+
+case "$1" in
+  {{PROJECT_NAME}}|app|a)
+    echo "=== {{PROJECT_NAME}} Logs (stdout) ==="
+    tail -f ~/Library/Logs/{{PROJECT_NAME}}.log
+    ;;
+  error|err|e)
+    echo "=== {{PROJECT_NAME}} Errors (stderr) ==="
+    tail -f ~/Library/Logs/{{PROJECT_NAME}}.error.log
+    ;;
+  all|*)
+    echo "=== All {{PROJECT_NAME}} Logs ==="
+    tail -f ~/Library/Logs/{{PROJECT_NAME}}*.log
+    ;;
+esac
