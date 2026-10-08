@@ -32,8 +32,7 @@ None.
 
 ## Context
 
-- Skill installed at `~/.zcode/skills/stencil/`; CLI via
-  `uv run --project ~/projects/stencil stencil ...`.
+- Skill at `~/.zcode/skills/stencil/`; CLI: `uv run --project ~/projects/stencil stencil ...`
 - Pilot detail: Entries 4–5 in
   [chronicles/phase-1-obsidian.md](chronicles/phase-1-obsidian.md).
 - handoff/plinth skills vendored in `.claude/skills/` for cloud
@@ -42,7 +41,7 @@ None.
   amoxtli vault, `Reading long prose in a browser`).
 - Gatsby headings: indented bare roman numerals on CRLF;
   `--extra-heading '^\s*[IVXLCDM]{1,7}\s*$'` recovers all 9.
-- Site checkouts hold uncommitted pilot work; artifacts in
+- Site checkouts hold uncommitted pilot work; run artifacts in
   `/tmp/stencil-run/64317/`.
 
 ## Next Session
