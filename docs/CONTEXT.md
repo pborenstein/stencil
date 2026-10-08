@@ -2,8 +2,8 @@
 phase: 1
 phase_name: Obsidian pilot
 updated: 2026-10-08
-last_commit: a70ed65
-last_entry: 6
+last_commit: 0c5187c
+last_entry: 7
 ---
 
 ## Current Focus

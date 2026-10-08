@@ -35,13 +35,13 @@ a session with it — the live run is the skill's first real test.
       below and in Entries 4–5)
 - [x] Vendor handoff and plinth skills into `.claude/skills/` for cloud
       sessions (DEC-010, 2026-10-07)
-- [ ] emit-chapters honors a JSON-level unit `title` over the
+- [x] emit-chapters honors (PR #1) a JSON-level unit `title` over the
       heading-derived default — SKILL.md's documented rename path; the
       pilot had to set incipit titles on emitted files instead
-- [ ] Ingest drops or flags TOC-shell units: Gatsby's bare-numeral TOC
+- [x] Ingest drops or flags TOC-shell (PR #2) units: Gatsby's bare-numeral TOC
       matched the heading style, was not dropped, and became 9 empty
       units (front matter trapped in the last)
-- [ ] Probe fallback when chapters/ is empty: the Gatsby re-emit probed
+- [x] Probe fallback when (PR #3) chapters/ is empty: the Gatsby re-emit probed
       `title,order` only, losing folio's `chapterNumber,dek` keys
 - [x] Ingest helper for an Obsidian page (wikilinks, callouts, embeds,
       images)

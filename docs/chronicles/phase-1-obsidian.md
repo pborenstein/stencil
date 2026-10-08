@@ -1,5 +1,22 @@
 # Phase 1: Obsidian Pilot
 
+## Entry 7: Pilot findings closed (2026-10-08)
+
+**What**: Fixed the three contract findings from Entries 4-5 in three PRs, all merged to main.
+
+**Why**: The Gatsby runs showed the CLI and SKILL.md disagreed with each other; Phase 1 could not start on Obsidian input until the Gutenberg path was honest.
+
+**How**:
+
+- PR #1: `emit-chapters` now lets a JSON-level unit `title` override the heading-derived default, matching the rename path SKILL.md documents
+- PR #2: `ingest-gutenberg` drops runs of empty TOC-shell units and flags a lone empty unit in `warnings`
+- PR #3: the probe falls back to HEAD's committed chapters when `chapters/` is empty, keeping the template's `chapterNumber,dek` keys
+- Each change came with tests; ruff and mypy clean
+
+**Decisions**: none new.
+
+**Files**: b33c7ed, bdc868b, 5db9a21 (`stencil/emit.py`, `stencil/gutenberg.py`, `tests/`)
+
 ## Entry 6: Vendor handoff and plinth skills for cloud sessions (2026-10-07)
 
 **What**: Copied the nine handoff and plinth skills into `.claude/skills/` so cloud sessions on this repo get `session-pickup` and `session-wrapup` (which CLAUDE.md names). No stencil code changed.
