@@ -47,7 +47,7 @@ a session with it — the live run is the skill's first real test.
       images)
 - [x] Post emitter probing `content/posts/` + `content/pages/` the way
       `emit_chapters.py` probes chapters
-- [ ] Agent-written excerpt / date / tags for a post
+- [x] Agent-written excerpt / date / tags for a post
 
 ## Completed Phases
 

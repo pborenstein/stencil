@@ -116,18 +116,52 @@ and need your call (inline the note, link it, or drop it); unresolved
 wikilinks are listed so you can decide which become real links. Images
 are listed in `images` with their source paths.
 
+## Posts and loose pages
+
+To install an ingested page into a blog-style site (one with
+`content/posts/`):
+
+    stencil emit-post SITE/ page.json [--page] [--replace-demo]
+
+`--page` writes to `content/pages/` (About and similar) instead. The
+command probes the site, so its output line `probe:` shows the
+filename pattern and frontmatter keys it will imitate.
+
+Excerpt, date, and tags are yours to write, never the CLI's. Before
+emitting, edit `page.json` `meta`:
+
+- `excerpt`: one or two sentences in the page's own voice that make a
+  reader want the post; not a summary of every point, and not the
+  first paragraph pasted. Skip it only if the site's posts have none.
+- `date`: `YYYY-MM-DD`. Use the page's front matter date when it has
+  one; otherwise ask the brief. If neither names a date, leave it out
+  and the CLI uses today's date, which you should mention in your
+  report.
+- `tags`: a short list (2-5) that reuses tags already on the site's
+  posts before inventing new ones. Check with
+  `grep -h '^tags' SITE/content/posts/*.md` or read a few.
+
+Front matter the page already carries (`tags`, `date`) is used as
+written; override it in `meta` only when the brief says to. After
+emit, read the `no value for keys:` line: each key listed is one the
+site's posts carry that you left empty. Fill it or say why it stays
+empty. Images the page references are copied to the site's image
+directory; the build gate shows whether the references resolve.
+
 ## Judgment calls you own
 
 - Letter units: chapters, an about-page frame note, or both.
 - Preamble routing: preface → chapter or about page; title page → drop.
 - Display titles, deks, chapterNumber labels.
 - Annotation content and placement.
+- Post excerpt, date, and tags.
 - The homepage demo title sweep (step 6).
 
 ## What the CLI owns
 
 - Marker slicing, TOC dropping, heading split, paragraph reflow,
   metadata parsing (`ingest-gutenberg`).
+- Site probing for posts and pages (`emit-post`), image copying.
 - Site probing (naming, frontmatter keys, nav order), file emission,
   colophon, metadata.js edits, annotation placement
   (`emit-chapters`).
