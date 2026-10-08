@@ -17,7 +17,7 @@ The three pilot findings are template-independent; Phase 1 proper
 
 - [x] emit-chapters: honor a JSON-level unit `title` over the
       heading-derived default (SKILL.md documents the JSON path)
-- [ ] ingest-gutenberg: drop or flag TOC-shell units (Gatsby's
+- [x] ingest-gutenberg: drop or flag TOC-shell units (Gatsby's
       numeral TOC became 9 empty units, front matter trapped in one)
 - [x] emit-chapters probe: don't lose frontmatter keys when
       chapters/ is empty (folio re-emit probed `title,order` only)

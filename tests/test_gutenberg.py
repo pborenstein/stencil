@@ -173,3 +173,19 @@ def test_extra_heading_regex_teaches_the_splitter():
 
 def test_clean_book_has_no_warnings():
     assert parse(book())["warnings"] == []
+
+
+def test_toc_shell_run_dropped_and_reported():
+    # numeral-only TOC with no CONTENTS label splits into empty units
+    text = book().replace(" CONTENTS\n\n Chapter 1\n Chapter 2\n\n\n\n\n", "Chapter 1\nChapter 2\nChapter 3\n\n")
+    result = parse(text)
+    assert [u["heading"] for u in result["units"]] == ["Chapter 1", "Chapter 2."]
+    assert [u["order"] for u in result["units"]] == [1, 2]
+    assert any("dropped 3 empty units" in w for w in result["warnings"])
+
+
+def test_lone_empty_unit_kept_and_flagged():
+    text = book().replace("Chapter 1\n\nFirst", "Part 1\n\nChapter 1\n\nFirst")
+    result = parse(text)
+    assert [u["heading"] for u in result["units"]] == ["Part 1", "Chapter 1", "Chapter 2."]
+    assert any("empty unit kept: Part 1" in w for w in result["warnings"])

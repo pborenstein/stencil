@@ -68,6 +68,45 @@ def drop_toc(body: str) -> str:
     return body[: m.start()] + (after[tail.end():] if tail else after)
 
 
+def drop_empty_runs(units: list[dict], warnings: list[str]) -> list[dict]:
+    """Drop runs of 2+ consecutive empty units (TOC shells) and report them.
+
+    A table of contents that ``drop_toc`` could not cut (no CONTENTS
+    label, numeral-only entries) splits into heading-only units. A run
+    of them holds no text, so dropping loses only the labels; the
+    warning names them because the unit after the run may hold front
+    matter trapped behind the last shell. A lone empty unit is kept
+    (a part divider is legitimately empty) but flagged. Surviving units
+    are renumbered.
+    """
+    keep: list[dict] = []
+    i = 0
+    while i < len(units):
+        j = i
+        while j < len(units) and not "".join(units[j]["lines"]).strip():
+            j += 1
+        run = j - i
+        if run >= 2:
+            labels = ", ".join(u["heading"] for u in units[i:j])
+            warnings.append(
+                f"dropped {run} empty units that look like a table of contents: "
+                f"{labels} -- the unit after them may hold front matter trapped "
+                "behind the last shell; check its text"
+            )
+            i = j
+            continue
+        if run == 1:
+            warnings.append(
+                f"empty unit kept: {units[i]['heading']} -- a part divider, or "
+                "a lone TOC entry; the agent decides"
+            )
+        keep.append(units[i])
+        i += 1
+    for n, u in enumerate(keep, 1):
+        u["order"] = n
+    return keep
+
+
 def parse(text: str, extra_headings: list[str] | None = None) -> dict:
     """Parse a PG plain-text ebook into stencil JSON.
 
@@ -129,6 +168,7 @@ def parse(text: str, extra_headings: list[str] | None = None) -> dict:
         units.append(current)
 
     warnings: list[str] = []
+    units = drop_empty_runs(units, warnings)
     preamble_text = reflow("\n".join(preamble))
     preamble_words = len(preamble_text.split())
     if not units:
