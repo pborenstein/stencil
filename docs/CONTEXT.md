@@ -24,7 +24,8 @@ The three pilot findings are template-independent; Phase 1 proper
 - [x] SKILL.md: note per-template front-matter routing targets
       (folio: about page; chapbook: homepage foreword slot)
 - [x] Obsidian ingest command (`ingest-obsidian`)
-- [ ] Post emitter + agent-written excerpt/date/tags (Phase 1
+- [x] Post emitter (`emit-post`; probes content/posts/, pages/)
+- [ ] Skill text for agent-written excerpt/date/tags (Phase 1
       checklist in [IMPLEMENTATION.md](IMPLEMENTATION.md))
 
 ## Blockers
