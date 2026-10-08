@@ -8,11 +8,10 @@ last_entry: 6
 
 ## Current Focus
 
-The skill is installed and live-validated on two templates: Gatsby
-#64317 into 002375.xyz (folio) and 002374.xyz (chapbook), both build
-gates clean, chapter text byte-identical. The three pilot findings
-are confirmed template-independent; Phase 1 proper (Obsidian ingest +
-post emit) follows them.
+Skill live-validated on two templates (Gatsby #64317 into 002375.xyz
+folio and 002374.xyz chapbook; build gates clean, text byte-identical).
+The three pilot findings are template-independent; Phase 1 proper
+(Obsidian ingest + post emit) follows them.
 
 ## Active Tasks
 
@@ -39,9 +38,8 @@ None.
   [chronicles/phase-1-obsidian.md](chronicles/phase-1-obsidian.md).
 - handoff/plinth skills vendored in `.claude/skills/` for cloud
   sessions (DEC-010); canonical copies in `~/projects/claude-plugins`.
-- Idea, not a task: epub export from the ingest JSON, for reading
-  outside the browser. Reading-interface notes are in the amoxtli
-  vault (`Reading long prose in a browser`).
+- Idea, not a task: epub export from the ingest JSON (reading notes:
+  amoxtli vault, `Reading long prose in a browser`).
 - Gatsby headings: indented bare roman numerals on CRLF;
   `--extra-heading '^\s*[IVXLCDM]{1,7}\s*$'` recovers all 9.
 - Site checkouts hold uncommitted pilot work; artifacts in
