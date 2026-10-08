@@ -1,5 +1,23 @@
 # Phase 1: Obsidian Pilot
 
+## Entry 8: Obsidian path built: ingest, emit-post, skill text (2026-10-08)
+
+**What**: Built the Obsidian-to-post path in four PRs, all merged to main. Only the live run on a real blog-style site remains in Phase 1.
+
+**Why**: Phase 1's goal is installing an Obsidian page into a mimeo blog; the Gutenberg path was already honest after Entry 7.
+
+**How**:
+
+- PR #4: SKILL.md notes the per-template front-matter routing targets
+- PR #5: `ingest-obsidian` (`stencil/obsidian.py`) turns a page into stencil JSON: wikilinks, callouts, embeds, images
+- PR #6: `emit-post` (`stencil/posts.py`) probes `content/posts/` and `content/pages/` and installs the page as a post or loose page, the way `emit-chapters` probes chapters (DEC-004 form)
+- PR #7: SKILL.md assigns excerpt, date and tags to the agent; CONTEXT refreshed
+- Tests added for both modules; suite at 54 passing
+
+**Decisions**: none new.
+
+**Files**: 5270ed0, 902cdec, c7a3104, 0f2a4d8 (`stencil/obsidian.py`, `stencil/posts.py`, `stencil/cli/`, `tests/`, `stencil-work/SKILL.md`)
+
 ## Entry 7: Pilot findings closed (2026-10-08)
 
 **What**: Fixed the three contract findings from Entries 4-5 in three PRs, all merged to main.

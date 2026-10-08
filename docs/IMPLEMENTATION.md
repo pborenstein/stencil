@@ -35,19 +35,19 @@ a session with it — the live run is the skill's first real test.
       below and in Entries 4–5)
 - [x] Vendor handoff and plinth skills into `.claude/skills/` for cloud
       sessions (DEC-010, 2026-10-07)
-- [x] emit-chapters honors (PR #1) a JSON-level unit `title` over the
+- [x] (PR #1) emit-chapters honors a JSON-level unit `title` over the
       heading-derived default — SKILL.md's documented rename path; the
       pilot had to set incipit titles on emitted files instead
-- [x] Ingest drops or flags TOC-shell (PR #2) units: Gatsby's bare-numeral TOC
+- [x] (PR #2) Ingest drops or flags TOC-shell units: Gatsby's bare-numeral TOC
       matched the heading style, was not dropped, and became 9 empty
       units (front matter trapped in the last)
-- [x] Probe fallback when (PR #3) chapters/ is empty: the Gatsby re-emit probed
+- [x] (PR #3) Probe fallback when chapters/ is empty: the Gatsby re-emit probed
       `title,order` only, losing folio's `chapterNumber,dek` keys
-- [x] Ingest helper for an Obsidian page (wikilinks, callouts, embeds,
+- [x] (PR #5) Ingest helper for an Obsidian page (wikilinks, callouts, embeds,
       images)
-- [x] Post emitter probing `content/posts/` + `content/pages/` the way
+- [x] (PR #6) Post emitter probing `content/posts/` + `content/pages/` the way
       `emit_chapters.py` probes chapters
-- [x] Agent-written excerpt / date / tags for a post
+- [x] (PR #7) Agent-written excerpt / date / tags for a post
 
 ## Completed Phases
 
